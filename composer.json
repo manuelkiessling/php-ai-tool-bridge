@@ -1,0 +1,63 @@
+{
+    "name": "manuelkiessling/gpt-tool-bridge",
+    "description": "A library that simplifies making GPT talk to your own APIs",
+    "license": "GPL-3.0-or-later",
+    "type": "library",
+    "keywords": [
+        "gpt",
+        "chatgpt",
+        "gpt4",
+        "api",
+        "json",
+        "tool"
+    ],
+    "authors": [
+        {
+            "name": "Manuel Kießling",
+            "email": "manuel@kiessling.net",
+            "homepage": "https://manuel.kiessling.net"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "ramsey/devtools": "^2.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "ManuelKiessling\\GptToolBridge\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ManuelKiessling\\Test\\GptToolBridge\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ramsey/composer-repl": true,
+            "phpstan/extension-installer": true,
+            "ergebnis/composer-normalize": true,
+            "captainhook/plugin-composer": true,
+            "ramsey/devtools": true
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "captainhook": {
+            "force-install": true
+        },
+        "ramsey/conventional-commits": {
+            "configFile": "conventional-commits.json"
+        },
+        "ramsey/devtools": {
+            "command-prefix": "dev",
+            "memory-limit": "-1"
+        }
+    }
+}

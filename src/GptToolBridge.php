@@ -6,27 +6,75 @@ namespace ManuelKiessling\GptToolBridge;
 
 use Exception;
 use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaParser;
+use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaValue;
+use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaValues;
 
 use function implode;
 use function is_null;
+use function json_encode;
 use function mb_stristr;
 use function sizeof;
 
-class GptToolBridge
+readonly class GptToolBridge
 {
-    /**
-     * @var ToolBridgeFunctionDefinition[]
-     */
-    private array $functionDefinitions = [];
-
-    public function registerFunctionDefinition(ToolBridgeFunctionDefinition $functionDefinition): void
-    {
-        $this->functionDefinitions[] = $functionDefinition;
+    /** @param ToolBridgeFunctionDefinition[] $functionDefinitions */
+    public function __construct(
+        private GptAssistant $gptAssistant,
+        private array $functionDefinitions,
+    ) {
     }
 
     public function containsFunctionCall(string $message): bool
     {
-        return mb_stristr($message, '|CallToolBridgeFunction|') !== false;
+        return $this->getFunctionDefinition($message) !== null;
+    }
+
+    public function handleAssistantMessage(string $message): ?ToolBridgeFunctionCallResult
+    {
+        if (!$this->containsFunctionCall($message)) {
+            return null;
+        }
+
+        $functionDefinition = $this->getFunctionDefinition($message);
+
+        if (is_null($functionDefinition)) {
+            return null;
+        }
+
+        $jsonSchemaParser = new JsonSchemaParser();
+        $jsonSchemaInfos = $jsonSchemaParser->getJsonSchemaInfos($functionDefinition->getInputJsonSchema());
+
+        $values = [];
+        foreach ($jsonSchemaInfos as $jsonSchemaInfo) {
+            $values[] = new JsonSchemaValue(
+                $jsonSchemaInfo,
+                $this->gptAssistant->getAssistantResponse(
+                    "Value for parameter '{$jsonSchemaInfo->path}' (of type {$jsonSchemaInfo->type->name}):",
+                ),
+            );
+        }
+
+        $jsonSchemaValues = new JsonSchemaValues(...$values);
+
+        $json = $jsonSchemaParser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues);
+
+        return $functionDefinition->invoke($json);
+    }
+
+    public function informAssistantAboutCallResult(ToolBridgeFunctionCallResult $callResult): string
+    {
+        $userMessage = "|CallToolBridgeFunction|{$callResult->functionDefinition->getName()}|Result|:";
+        $userMessage .= "\n";
+
+        $res = [
+            'success' => $callResult->status === ToolBridgeFunctionCallResultStatus::SUCCESS,
+            'message' => $callResult->message,
+            'data' => $callResult->data,
+        ];
+
+        $userMessage .= json_encode($res);
+
+        return $this->gptAssistant->getAssistantResponse($userMessage);
     }
 
     public function getFunctionDefinition(string $message): ?ToolBridgeFunctionDefinition
@@ -43,14 +91,14 @@ class GptToolBridge
     /**
      * @throws Exception
      */
-    public function queryTool(string $message): ToolBridgeFunctionCallResult
+    public function queryToolBridgeFunction(string $message): ToolBridgeFunctionCallResult
     {
-        $definition = $this->getFunctionDefinition($message);
-        if (is_null($definition)) {
+        $functionDefinition = $this->getFunctionDefinition($message);
+        if (is_null($functionDefinition)) {
             throw new Exception();
         }
 
-        return $definition->invoke();
+        return $functionDefinition->invoke();
     }
 
     /**
@@ -75,7 +123,7 @@ PROMPT;
 
         $functionNames = [];
         foreach ($this->functionDefinitions as $functionDefinition) {
-            $functionNames[] = "|GptBackendBridge|{$functionDefinition->getName()}|";
+            $functionNames[] = "|CallToolBridgeFunction|{$functionDefinition->getName()}|";
             $schemaInfos = $jsonSchemaParser->getJsonSchemaInfos($functionDefinition->getInputJsonSchema());
 
             $prompt .= "Function '{$functionDefinition->getName()}': {$functionDefinition->getDescription()}.";
@@ -93,7 +141,7 @@ PROMPT;
         $prompt .= "\n";
         $prompt .= <<<'PROMPT'
 Whenever you want to use one of the tool functions,
-you need to simply write a single message starting with '|GptBackendBridge|' followed by the function name,
+you need to simply write a single message starting with '|CallToolBridgeFunction|' followed by the function name,
 like this:
 PROMPT;
 
@@ -101,7 +149,7 @@ PROMPT;
 
         $prompt .= <<<'PROMPT'
 .
-This message must not contain any other text besides the |GptBackendBridge| marker
+This message must not contain any other text besides the |CallToolBridgeFunction| marker
 followed by the exact tool function name and the final | character.
 
 When you write such a tool-function-usage message,
@@ -135,7 +183,7 @@ Example:
 
 PROMPT;
 
-        $prompt .= "|GptBackendBridge|{$this->functionDefinitions[0]->getName()}|Result|:";
+        $prompt .= "|CallToolBridgeFunction|{$this->functionDefinitions[0]->getName()}|Result|:";
         $prompt .= "\n";
 
         $prompt .= <<<'PROMPT'

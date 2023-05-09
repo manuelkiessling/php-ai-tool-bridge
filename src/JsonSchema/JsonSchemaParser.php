@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace ManuelKiessling\GptToolBridge\JsonSchema;
 
+use InvalidArgumentException;
 use JsonException;
 
+use function explode;
+use function in_array;
 use function is_array;
 use function json_decode;
+use function json_encode;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -70,5 +74,47 @@ class JsonSchemaParser
                 }
             }
         }
+    }
+
+    public function generateJsonFromSchema(
+        JsonSchemaInfos $schemaInfos,
+        JsonSchemaValues $values,
+    ): string {
+        $result = [];
+        $schemaPaths = [];
+
+        // Create an array of all schema paths
+        foreach ($schemaInfos as $info) {
+            $schemaPaths[] = $info->path;
+        }
+
+        foreach ($values as $value) {
+            if (!in_array($value->jsonSchemaInfo->path, $schemaPaths)) {
+                throw new InvalidArgumentException(
+                    'No corresponding JsonSchemaInfo found for JsonSchemaValue path: ' . $value->jsonSchemaInfo->path
+                );
+            }
+
+            $pathParts = explode('.', $value->jsonSchemaInfo->path);
+
+            $current = &$result;
+            foreach ($pathParts as $part) {
+                if (!isset($current[$part])) {
+                    $current[$part] = [];
+                }
+                $current = &$current[$part];
+            }
+
+            $current = match ($value->jsonSchemaInfo->type) {
+                JsonSchemaType::INTEGER => (int) $value->value,
+                JsonSchemaType::FLOAT => (float) $value->value,
+                JsonSchemaType::STRING => (string) $value->value,
+                JsonSchemaType::BOOLEAN => (bool) $value->value,
+                JsonSchemaType::ARRAY => explode('|', $value->value),
+                default => $value->value
+            };
+        }
+
+        return json_encode($result);
     }
 }

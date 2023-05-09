@@ -6,10 +6,8 @@ namespace ManuelKiessling\GptToolBridge;
 
 readonly class ToolBridgeFunctionCallResult
 {
-    /**
-     * @param mixed[] $data
-     */
     public function __construct(
+        public ToolBridgeFunctionDefinition $functionDefinition,
         public ToolBridgeFunctionCallResultStatus $status,
         public string $message,
         public array $data,

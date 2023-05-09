@@ -20,12 +20,15 @@ class DemoToolBridgeFunctionDefinition implements ToolBridgeFunctionDefinition
         return 'creates a new user account';
     }
 
-    public function invoke(): ToolBridgeFunctionCallResult
+    public function invoke(string $json): ToolBridgeFunctionCallResult
     {
+        $jsonAsArray = json_decode($json, true);
+
         return new ToolBridgeFunctionCallResult(
+            $this,
             ToolBridgeFunctionCallResultStatus::SUCCESS,
             'A new user account has been created.',
-            ['userId' => '0ae9876545dd67c89'],
+            ['json' => $jsonAsArray],
         );
     }
 
