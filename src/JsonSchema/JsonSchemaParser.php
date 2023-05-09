@@ -110,7 +110,7 @@ class JsonSchemaParser
                 JsonSchemaType::FLOAT => (float) $value->value,
                 JsonSchemaType::STRING => (string) $value->value,
                 JsonSchemaType::BOOLEAN => (bool) $value->value,
-                JsonSchemaType::ARRAY => explode('|', $value->value),
+                JsonSchemaType::ARRAY => explode('|', (string) $value->value),
                 default => $value->value
             };
         }
