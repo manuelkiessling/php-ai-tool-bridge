@@ -68,25 +68,18 @@ When you do begin working on your feature, here are some guidelines to consider:
   We will use this description to update the CHANGELOG. If there is no
   description, or it does not adequately describe your feature, we may ask you
   to update the description.
-* manuelkiessling/php-gpt-tool-bridge follows a superset of **[PSR-12 coding standard][psr-12]**.
-  Please ensure your code does, too. _Hint: run `composer dev:lint` to check._
 * Please **write tests** for any new features you add.
 * Please **ensure that tests pass** before submitting your pull request.
   manuelkiessling/php-gpt-tool-bridge automatically runs tests for pull requests. However,
-  running the tests locally will help save time. _Hint: run `composer test`._
+  running the tests locally will help save time. _Hint: run `php vendor/bin/phpunit tests/`._
 * **Use topic/feature branches.** Please do not ask to pull from your main branch.
   * For more information, see "[Understanding the GitHub flow][gh-flow]."
 * **Submit one feature per pull request.** If you have multiple features you
   wish to submit, please break them into separate pull requests.
-* **Write good commit messages.** This project follows the
-  [Conventional Commits][] specification and uses Git hooks to ensure all
-  commits follow this standard. Running `composer install` will set up the Git
-  hooks, so when you run `git commit`, you'll be prompted to create a commit
-  using the Conventional Commits rules.
 
 ## Developing
 
-To develop this project, you will need [PHP](https://www.php.net) 7.4 or greater
+To develop this project, you will need [PHP](https://www.php.net) 8.2 or greater
 and [Composer](https://getcomposer.org).
 
 After cloning this repository locally, execute the following commands:
@@ -97,52 +90,6 @@ composer install
 ```
 
 Now, you are ready to develop!
-
-### Tooling
-
-This project uses [CaptainHook](https://github.com/CaptainHookPhp/captainhook)
-to validate all staged changes prior to commit.
-
-### Commands
-
-To see all the commands available for contributing to this project:
-
-``` bash
-composer list dev
-```
-
-### Coding Standards
-
-This project follows a superset of [PSR-12](https://www.php-fig.org/psr/psr-12/)
-coding standards, enforced by [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer).
-
-CaptainHook will run coding standards checks before committing.
-
-You may lint the codebase manually using the following commands:
-
-``` bash
-# Lint
-composer dev:lint
-
-# Attempt to auto-fix coding standards issues
-composer dev:lint:fix
-```
-
-### Static Analysis
-
-This project uses a combination of [PHPStan](https://github.com/phpstan/phpstan)
-and [Psalm](https://github.com/vimeo/psalm) to provide static analysis of PHP
-code.
-
-CaptainHook will run static analysis checks before committing.
-
-You may run static analysis manually across the whole codebase with the
-following command:
-
-``` bash
-# Static analysis
-composer dev:analyze
-```
 
 ### Project Structure
 
