@@ -24,7 +24,6 @@ env:
 jobs:
   unit-tests:
     name: "Unit tests"
-    needs: ["code-coverage"]
     runs-on: ${{ matrix.os }}
 
     strategy:
