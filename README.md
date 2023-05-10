@@ -47,6 +47,19 @@ However, you cannot add your whole product catalog to the prompt. Thus, when you
 
 The AI knows best when it is time to retrieve these information from the external world. Because making your own code listen to the conversation and having it guess when it is time to make the Product Search API call is complex and error prone, and makes the idea of using a powerful AI a bit pointless. 
 
+The best approach is to make the AI recognize that the time has come to talk to the outside world, and have it do so in a structured and unmistakable way.
+
+The solution is to teach the AI, within the initial system prompt, that it has one or more tools at its disposal which it can use at will.
+
+This is done by first writing a so-called tool function definition, like this:
+
+```php
+<?php
+
+use ManuelKiessling\AiToolBridge\ToolBridgeFunctionDefinition;
+
+class ProductSearch implements ToolBridgeFunctionDefinition
+```
 
 
 
