@@ -61,5 +61,4 @@ jobs:
         run: "composer install"
 
       - name: "Run unit tests (PHPUnit)"
-        shell: "bash"
         run: "php vendor/bin/phpunit tests/"
