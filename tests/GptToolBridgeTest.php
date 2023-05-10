@@ -6,6 +6,7 @@ namespace ManuelKiessling\Test\GptToolBridge;
 
 use Exception;
 use ManuelKiessling\GptToolBridge\GptToolBridge;
+use PHPUnit\Framework\TestCase;
 
 class GptToolBridgeTest extends TestCase
 {

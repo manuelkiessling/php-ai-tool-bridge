@@ -8,7 +8,7 @@ use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaInfo;
 use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaInfos;
 use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaParser;
 use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaType;
-use ManuelKiessling\Test\GptToolBridge\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class JsonSchemaParserTest extends TestCase
 {
