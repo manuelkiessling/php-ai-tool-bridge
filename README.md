@@ -23,6 +23,6 @@ Keeping user information safe and secure is a top priority, and we welcome the c
 
 ## Copyright and License
 
-manuelkiessling/php-gpt-tool-bridge is copyright © [Manuel Kießling](https://manuel.kiessling.net) and licensed for use under the terms of the GNU General Public License (GPL-3.0-or-later) as published by the Free Software Foundation.
+GPT Tool Bridge for PHP is copyright © [Manuel Kießling](https://manuel.kiessling.net) and licensed for use under the terms of the GNU General Public License (GPL-3.0-or-later) as published by the Free Software Foundation.
 
 Please see [LICENSE](LICENSE) and [NOTICE](NOTICE) for more information.
