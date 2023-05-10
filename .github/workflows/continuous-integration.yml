@@ -58,9 +58,7 @@ jobs:
           coverage: "none"
 
       - name: "Install dependencies (Composer)"
-        with:
-          dependency-versions: "${{ matrix.composer-deps }}"
-          composer-options: "${{ matrix.composer-options }}"
+        run: "composer install"
 
       - name: "Run unit tests (PHPUnit)"
         shell: "bash"
