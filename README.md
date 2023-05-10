@@ -61,7 +61,7 @@ use ManuelKiessling\AiToolBridge\ToolBridgeFunctionDefinition;
 class ProductSearch implements ToolBridgeFunctionDefinition
 ```
 
-An important optimization is that the library doesn't use the AI assistant to create the request JSON - instead, it asks the AI for the request *values* only, and uses these to populate the request JSON structure. This way the library ensures that the JSON is always valid.
+An important optimization is that the library doesn't use the AI assistant to create the JSON needed for the request. Instead, it asks the AI for only the request *values*, and — based on the JSON Schema — uses them to generate the full request JSON structure itself. This way, the library ensures that the final JSON is always valid.
 
 
 ## Contributing
