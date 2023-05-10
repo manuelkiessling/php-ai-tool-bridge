@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManuelKiessling\GptToolBridge;
+namespace ManuelKiessling\AiToolBridge;
 
 use Exception;
-use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaParser;
-use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaValue;
-use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaValues;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaParser;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaValue;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaValues;
 
 use function implode;
 use function is_null;
@@ -15,12 +15,12 @@ use function json_encode;
 use function mb_stristr;
 use function sizeof;
 
-readonly class GptToolBridge
+readonly class AiToolBridge
 {
     /** @param ToolBridgeFunctionDefinition[] $functionDefinitions */
     public function __construct(
-        private GptAssistant $gptAssistant,
-        private array $functionDefinitions,
+        private AiAssistant $aiAssistant,
+        private array       $functionDefinitions,
     ) {
     }
 
@@ -48,7 +48,7 @@ readonly class GptToolBridge
         foreach ($jsonSchemaInfos as $jsonSchemaInfo) {
             $values[] = new JsonSchemaValue(
                 $jsonSchemaInfo,
-                $this->gptAssistant->getAssistantResponse(
+                $this->aiAssistant->getAssistantResponse(
                     "Value for parameter '{$jsonSchemaInfo->path}' (of type {$jsonSchemaInfo->type->name}):",
                 ),
             );
@@ -74,7 +74,7 @@ readonly class GptToolBridge
 
         $userMessage .= json_encode($res);
 
-        return $this->gptAssistant->getAssistantResponse($userMessage);
+        return $this->aiAssistant->getAssistantResponse($userMessage);
     }
 
     public function getFunctionDefinition(string $message): ?ToolBridgeFunctionDefinition
@@ -115,7 +115,7 @@ readonly class GptToolBridge
         $prompt = <<<'PROMPT'
 When you found out what I want to do and you have gathered all information from me
 to put my current intention into action,
-you can make me use an external tool called 'GptBackendBridge' for you.
+you can make me use an external tool called 'AiToolBridge' for you.
 The tool has the following functions:
 
 

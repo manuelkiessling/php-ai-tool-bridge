@@ -1,12 +1,13 @@
 {
-    "name": "manuelkiessling/gpt-tool-bridge",
-    "description": "A library that simplifies making GPT talk to your own APIs",
+    "name": "manuelkiessling/ai-tool-bridge",
+    "description": "A library that simplifies making AIs talk to your own APIs",
     "license": "GPL-3.0-or-later",
     "type": "library",
     "keywords": [
-        "gpt",
         "chatgpt",
-        "gpt4",
+        "gpt-3",
+        "gpt-4",
+        "ai",
         "api",
         "json",
         "tool"
@@ -19,18 +20,19 @@
         }
     ],
     "require": {
-        "php": "^8.2"
+        "php": "^8.2",
+        "ext-mbstring": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "ManuelKiessling\\GptToolBridge\\": "src/"
+            "ManuelKiessling\\AiToolBridge\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ManuelKiessling\\Test\\GptToolBridge\\": "tests/"
+            "ManuelKiessling\\Test\\AiToolBridge\\": "tests/"
         }
     },
     "config": {

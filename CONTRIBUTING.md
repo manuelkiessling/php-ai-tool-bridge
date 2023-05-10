@@ -6,7 +6,7 @@ Contributions are welcome. This project accepts pull requests on [GitHub][].
 
 You can find help and discussion in the following places:
 
-* GitHub Issues: <https://github.com/manuelkiessling/php-gpt-tool-bridge/issues>
+* GitHub Issues: <https://github.com/manuelkiessling/php-ai-tool-bridge/issues>
 
 ## Reporting Bugs
 
@@ -70,7 +70,7 @@ When you do begin working on your feature, here are some guidelines to consider:
   to update the description.
 * Please **write tests** for any new features you add.
 * Please **ensure that tests pass** before submitting your pull request.
-  manuelkiessling/php-gpt-tool-bridge automatically runs tests for pull requests. However,
+  manuelkiessling/php-ai-tool-bridge automatically runs tests for pull requests. However,
   running the tests locally will help save time. _Hint: run `php vendor/bin/phpunit tests/`._
 * **Use topic/feature branches.** Please do not ask to pull from your main branch.
   * For more information, see "[Understanding the GitHub flow][gh-flow]."
@@ -112,9 +112,9 @@ composer test
 CaptainHook will automatically run all tests before pushing to the remote
 repository.
 
-[github]: https://github.com/manuelkiessling/php-gpt-tool-bridge
-[issues]: https://github.com/manuelkiessling/php-gpt-tool-bridge/issues
-[pull requests]: https://github.com/manuelkiessling/php-gpt-tool-bridge/pulls
+[github]: https://github.com/manuelkiessling/php-ai-tool-bridge
+[issues]: https://github.com/manuelkiessling/php-ai-tool-bridge/issues
+[pull requests]: https://github.com/manuelkiessling/php-ai-tool-bridge/pulls
 [psr-12]: https://www.php-fig.org/psr/psr-12/
 [gh-flow]: https://guides.github.com/introduction/flow/
 [conventional commits]: https://www.conventionalcommits.org/

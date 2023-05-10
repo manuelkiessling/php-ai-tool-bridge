@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ManuelKiessling\Test\GptToolBridge;
+namespace ManuelKiessling\Test\AiToolBridge;
 
-use ManuelKiessling\GptToolBridge\ToolBridgeFunctionCallResult;
-use ManuelKiessling\GptToolBridge\ToolBridgeFunctionCallResultStatus;
-use ManuelKiessling\GptToolBridge\ToolBridgeFunctionDefinition;
+use ManuelKiessling\AiToolBridge\ToolBridgeFunctionCallResult;
+use ManuelKiessling\AiToolBridge\ToolBridgeFunctionCallResultStatus;
+use ManuelKiessling\AiToolBridge\ToolBridgeFunctionDefinition;
 
 class DemoToolBridgeFunctionDefinition implements ToolBridgeFunctionDefinition
 {

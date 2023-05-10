@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace ManuelKiessling\Test\GptToolBridge;
+namespace ManuelKiessling\Test\AiToolBridge;
 
-use ManuelKiessling\GptToolBridge\GptAssistant;
+use ManuelKiessling\AiToolBridge\AiAssistant;
 
-class DemoGptAssistant implements GptAssistant
+class DemoAiAssistant implements AiAssistant
 {
     public function getAssistantResponse(string $userMessage): string
     {

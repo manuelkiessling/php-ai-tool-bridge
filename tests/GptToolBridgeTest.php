@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace ManuelKiessling\Test\GptToolBridge;
+namespace ManuelKiessling\Test\AiToolBridge;
 
 use Exception;
-use ManuelKiessling\GptToolBridge\GptToolBridge;
+use ManuelKiessling\AiToolBridge\AiToolBridge;
 use PHPUnit\Framework\TestCase;
 
-class GptToolBridgeTest extends TestCase
+class AiToolBridgeTest extends TestCase
 {
     public function testContainsToolQuery(): void
     {
         $functionDefinition = new DemoToolBridgeFunctionDefinition();
-        $bridge = new GptToolBridge(
-            new DemoGptAssistant(),
+        $bridge = new AiToolBridge(
+            new DemoAiAssistant(),
             [$functionDefinition],
         );
 
@@ -38,8 +38,8 @@ class GptToolBridgeTest extends TestCase
     public function testGetFunctionDefinition(): void
     {
         $functionDefinition = new DemoToolBridgeFunctionDefinition();
-        $bridge = new GptToolBridge(
-            new DemoGptAssistant(),
+        $bridge = new AiToolBridge(
+            new DemoAiAssistant(),
             [$functionDefinition],
         );
 
@@ -55,8 +55,8 @@ class GptToolBridgeTest extends TestCase
     public function testGetPrompt(): void
     {
         $functionDefinition = new DemoToolBridgeFunctionDefinition();
-        $bridge = new GptToolBridge(
-            new DemoGptAssistant(),
+        $bridge = new AiToolBridge(
+            new DemoAiAssistant(),
             [$functionDefinition],
         );
 
@@ -64,7 +64,7 @@ class GptToolBridgeTest extends TestCase
             <<<'PROMPT'
 When you found out what I want to do and you have gathered all information from me
 to put my current intention into action,
-you can make me use an external tool called 'GptBackendBridge' for you.
+you can make me use an external tool called 'AiToolBridge' for you.
 The tool has the following functions:
 
 Function 'createUser': creates a new user account.
@@ -114,8 +114,8 @@ PROMPT,
     public function testDialog(): void
     {
         $functionDefinition = new DemoToolBridgeFunctionDefinition();
-        $bridge = new GptToolBridge(
-            new DemoGptAssistant(),
+        $bridge = new AiToolBridge(
+            new DemoAiAssistant(),
             [$functionDefinition],
         );
 

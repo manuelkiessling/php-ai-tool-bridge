@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace ManuelKiessling\Test\GptToolBridge\JsonSchema;
+namespace ManuelKiessling\Test\AiToolBridge\JsonSchema;
 
-use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaInfo;
-use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaInfos;
-use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaParser;
-use ManuelKiessling\GptToolBridge\JsonSchema\JsonSchemaType;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaInfo;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaInfos;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaParser;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaType;
 use PHPUnit\Framework\TestCase;
 
 class JsonSchemaParserTest extends TestCase

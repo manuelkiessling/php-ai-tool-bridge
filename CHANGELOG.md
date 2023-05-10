@@ -1,4 +1,4 @@
-# manuelkiessling/gpt-tool-bridge Changelog
+# manuelkiessling/ai-tool-bridge Changelog
 
 All notable changes to this project will be documented in this file.
 

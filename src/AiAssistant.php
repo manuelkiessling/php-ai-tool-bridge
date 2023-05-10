@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ManuelKiessling\GptToolBridge;
+namespace ManuelKiessling\AiToolBridge;
 
-interface GptAssistant
+interface AiAssistant
 {
     public function getAssistantResponse(string $userMessage): string;
 }

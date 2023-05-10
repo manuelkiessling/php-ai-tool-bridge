@@ -31,7 +31,7 @@ this repository, we encourage you to notify us.
 
 | Version | In scope | Source code |
 | ------- | :------: | ----------- |
-| latest  | ✅        | https://github.com/manuelkiessling/php-gpt-tool-bridge |
+| latest  | ✅        | https://github.com/manuelkiessling/php-ai-tool-bridge |
 
 ## How to Submit a Report
 

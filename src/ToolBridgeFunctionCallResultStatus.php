@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ManuelKiessling\GptToolBridge;
+namespace ManuelKiessling\AiToolBridge;
 
 enum ToolBridgeFunctionCallResultStatus
 {
