@@ -17,7 +17,7 @@ use function sizeof;
 
 readonly class AiToolBridge
 {
-    /** @param ToolFunctionDefinition[] $functionDefinitions */
+    /** @param ToolFunction[] $functionDefinitions */
     public function __construct(
         private AiAssistantMessenger $aiAssistant,
         private array                $functionDefinitions,
@@ -77,7 +77,7 @@ readonly class AiToolBridge
         return $this->aiAssistant->getResponseForToolFunction($userMessage);
     }
 
-    public function getFunctionDefinition(string $message): ?ToolFunctionDefinition
+    public function getFunctionDefinition(string $message): ?ToolFunction
     {
         foreach ($this->functionDefinitions as $toolBridgeDefinition) {
             if (mb_stristr($message, "|CallToolBridgeFunction|{$toolBridgeDefinition->getName()}|") !== false) {

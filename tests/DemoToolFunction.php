@@ -6,9 +6,9 @@ namespace ManuelKiessling\Test\AiToolBridge;
 
 use ManuelKiessling\AiToolBridge\ToolFunctionCallResult;
 use ManuelKiessling\AiToolBridge\ToolFunctionCallResultStatus;
-use ManuelKiessling\AiToolBridge\ToolFunctionDefinition;
+use ManuelKiessling\AiToolBridge\ToolFunction;
 
-class DemoToolFunctionDefinition implements ToolFunctionDefinition
+class DemoToolFunction implements ToolFunction
 {
     public function getName(): string
     {

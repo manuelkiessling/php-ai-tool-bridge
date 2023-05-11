@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuelKiessling\AiToolBridge;
 
-interface ToolFunctionDefinition
+interface ToolFunction
 {
     public function getName(): string;
 
