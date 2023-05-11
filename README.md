@@ -43,7 +43,7 @@ Let's assume you have an ecommerce business and you want to provide an AI chat i
 
 You will probably prompt the AI assistant along the lines of "You are a friendly and helpful shopping assistant that informs the user about our product catalog..." and so on.
 
-However, you cannot add your whole product catalog to the prompt. Thus, when your user asks the AI to "tell me about some kitchen helpers on offer", you need to identify that at this point in the conversation, the AI needs information from your ecommerce backend systems (e.g. by making a request to your Product Search API with query "kitchen helpers"), and you need to provide the resulting information back to the AI assistant, which can then summarize the product information for the user.
+However, you cannot add your whole product catalog to the prompt. Thus, when your user asks the AI to "tell me about some kitchen helpers on offer", you need to identify that at this point in the conversation, the AI needs information from your ecommerce backend systems (e.g. by making a request to your Product Search API with query "kitchen helpers"), you need to rerieve this information for the AI, and you need to provide the resulting information back to the AI assistant, which can then summarize the product information for the user.
 
 The AI knows best when it is time to retrieve these information from the external world. Because making your own code listen to the conversation and having it guess when it is time to make the Product Search API call is complex and error prone, and makes the idea of using a powerful AI a bit pointless. 
 
@@ -56,12 +56,70 @@ This is done by first writing a so-called tool function definition, like this:
 ```php
 <?php
 
+namespace Your\Project\Namespace;
+
 use ManuelKiessling\AiToolBridge\ToolBridgeFunctionDefinition;
 
 class ProductSearch implements ToolBridgeFunctionDefinition
+{
+    public function getName(): string
+    {
+        return 'productSearch';
+    }
+    
+    public function getDescription(): string
+    {
+        return 'allows to search the product catalogue and retrieve information about products';
+    }
+    
+    public function getInputJsonSchema(): string
+    {
+        return <<<'JSON'
+{
+  "type": "object",
+  "properties": {
+    "searchterms": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "searchterms"
+  ]
+}
+JSON;
+    }
+    
+    public function invoke(string $json): ToolBridgeFunctionCallResult
+    {
+        // we will talk about this in a moment
+    }
+}
 ```
 
-An important optimization is that the library doesn't use the AI assistant to create the JSON needed for the request. Instead, it asks the AI for only the request *values*, and — based on the JSON Schema — uses them to generate the full request JSON structure itself. This way, the library ensures that the final JSON is always valid.
+You can define multiple tool function definitions - for example, another tool function could be used to enable the AI to put products into the checkout basket when the user asks for it. We will keep the example simple, though.
+
+Next, you need to integrate the tool with your existing AI integration. This is done using the `AiToolBridge` helper:
+
+```php
+<?php
+
+namespace Your\Project\Namespace;
+
+class YourAiIntegrationClass
+{
+    public function setup(): void
+    {
+        $functionDefinition = new DemoToolBridgeFunctionDefinition();
+        $bridge = new AiToolBridge(
+            new DemoAiAssistant(),
+            [$functionDefinition],
+        );
+    }
+}
+```
+
+
+An important optimization is that the library does NOT use the AI assistant to create the actual JSON needed for the request. Instead, it asks the AI only for the required values, and — based on the JSON Schema — uses them to generate the full request JSON structure itself. This way, the library ensures that the final JSON is always valid.
 
 
 ## Contributing

@@ -12,7 +12,5 @@ interface ToolBridgeFunctionDefinition
 
     public function getInputJsonSchema(): string;
 
-    public function getOutputJsonSchema(): string;
-
     public function invoke(string $json): ToolBridgeFunctionCallResult;
 }

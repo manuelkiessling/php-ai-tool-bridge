@@ -53,21 +53,4 @@ class DemoToolBridgeFunctionDefinition implements ToolBridgeFunctionDefinition
 }
 JSON;
     }
-
-    public function getOutputJsonSchema(): string
-    {
-        return <<<'JSON'
-{
-  "type": "object",
-  "properties": {
-    "userId": {
-      "type": "string"
-    }
-  },
-  "required": [
-    "userId"
-  ]
-}
-JSON;
-    }
 }
