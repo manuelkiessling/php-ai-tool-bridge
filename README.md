@@ -19,9 +19,9 @@ composer require manuelkiessling/ai-tool-bridge
 
 Integrating AIs like the OpenAI GPT-3 and GPT-4 models into your own projects using the ChatGPT API is quick and easy if all you want to do is exchange text messages with the AI.
 
-Things get much more interesting if you make the AI interact with the rest of your application, e.g. by having it make API calls to retrieve information of trigger external actions.
+But things get much more interesting if you make the AI interact with the rest of your application, e.g. by having it make API calls to retrieve information or trigger external actions.
 
-However, things also get messy when trying to do so - you need to identify if and when the AI is not simply talking to the user, but wants to talk to your applications or APIs. And you need to ensure that when the AI talks to your systems via some structured language like JSON, it does so using the exact JSON structure you need.
+However, things also get *messy* when trying to do so - you need to identify if and when the AI is not simply talking to the user, but wants to talk to your applications or APIs. And you need to ensure that when the AI talks to your systems via some structured language like JSON, it does so using the exact JSON structure you need.
 
 
 ### The solution
@@ -44,7 +44,7 @@ Let's assume you have an ecommerce business and you want to provide an AI chat i
 
 You will probably prompt the AI assistant along the lines of "You are a friendly and helpful shopping assistant that informs the user about our product catalog..." and so on.
 
-However, you cannot add your whole product catalog to the prompt. Thus, when your user asks the AI to "tell me about some kitchen helpers on offer", you need to identify that at this point in the conversation, the AI needs information from your ecommerce backend systems (e.g. by making a request to your Product Search API with query "kitchen helpers"), you need to rerieve this information for the AI, and you need to provide the resulting information back to the AI assistant, which can then summarize the product information for the user.
+However, you cannot add your whole product catalog to the prompt. Thus, when your user asks the AI to "tell me about some kitchen helpers on offer", you need to identify that at this point in the conversation, the AI needs information from your ecommerce backend systems (e.g. by making a request to your Product Search API with query "kitchen helpers"), you need to retrieve this information for the AI, and you need to provide the resulting information back to the AI assistant, which can then summarize the product information for the user.
 
 The AI knows best when it is time to retrieve these information from the external world. Because making your own code listen to the conversation and having it guess when it is time to make the Product Search API call is complex and error prone, and makes the idea of using a powerful AI a bit pointless. 
 
