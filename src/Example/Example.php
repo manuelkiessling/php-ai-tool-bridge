@@ -8,21 +8,47 @@ use ManuelKiessling\AiToolBridge\AiToolBridge;
 
 class Example
 {
-    public function setup(): void
+    private AiToolBridge $aiToolBridge;
+    private MyAiService $myAiService;
+
+    public function __construct()
     {
-        $myAiService = new MyAiService();
+        $this->myAiService = new MyAiService();
 
         $myProductSearchToolFunction = new MyProductSearchToolFunction();
 
-        $aiToolBridge = new AiToolBridge(
-            new $myAiService,
+        $this->aiToolBridge = new AiToolBridge(
+            new $this->myAiService,
             [$myProductSearchToolFunction],
         );
 
-        $myAiService->setSystemPrompt(
-            "You are a friendly and helpful shopping assistant that informs the user about our product catalog... {$aiToolBridge->getPrompt()}"
+        $this->myAiService->setSystemPrompt(
+            "You are a friendly and helpful shopping assistant that informs the user about our product catalog...
+             {$this->aiToolBridge->getPrompt()}"
         );
+    }
 
-        // Whatever code is needed to get the AI conversation going...
+    public function handleAssistantMessage(string $message): void
+    {
+        $toolFunctionCallResult = $this->aiToolBridge->handleAssistantMessage($message);
+
+        if (is_null($toolFunctionCallResult)) {
+            // The AI didn't use a tool function, thus its message is meant for the user
+            $this->sendAssistantMessageToUser($message);
+        } else {
+            // The AI used a tool function, we now need to send the result to the AI
+            $dataAsJson = json_encode($toolFunctionCallResult->data);
+            $this->sendUserMessageToAssistant($toolFunctionCallResult->message . ' ' . $dataAsJson);
+        }
+    }
+
+    public function sendAssistantMessageToUser(string $message): void
+    {
+        // whatever code is needed to show an AI assistant message to the user
+    }
+
+    public function sendUserMessageToAssistant(string $message): void
+    {
+        // whatever code is needed to send a message to the AI assistant
     }
 }
