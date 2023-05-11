@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuelKiessling\AiToolBridge;
 
-enum ToolBridgeFunctionCallResultStatus
+enum ToolFunctionCallResultStatus
 {
     case SUCCESS;
     case FAILURE;

@@ -17,10 +17,10 @@ use function sizeof;
 
 readonly class AiToolBridge
 {
-    /** @param ToolBridgeFunctionDefinition[] $functionDefinitions */
+    /** @param ToolFunctionDefinition[] $functionDefinitions */
     public function __construct(
-        private AiAssistant $aiAssistant,
-        private array       $functionDefinitions,
+        private AiAssistantMessenger $aiAssistant,
+        private array                $functionDefinitions,
     ) {
     }
 
@@ -29,7 +29,7 @@ readonly class AiToolBridge
         return $this->getFunctionDefinition($message) !== null;
     }
 
-    public function handleAssistantMessage(string $message): ?ToolBridgeFunctionCallResult
+    public function handleAssistantMessage(string $message): ?ToolFunctionCallResult
     {
         if (!$this->containsFunctionCall($message)) {
             return null;
@@ -48,7 +48,7 @@ readonly class AiToolBridge
         foreach ($jsonSchemaInfos as $jsonSchemaInfo) {
             $values[] = new JsonSchemaValue(
                 $jsonSchemaInfo,
-                $this->aiAssistant->getAssistantResponse(
+                $this->aiAssistant->getResponseForToolFunction(
                     "Value for parameter '{$jsonSchemaInfo->path}' (of type {$jsonSchemaInfo->type->name}):",
                 ),
             );
@@ -61,23 +61,23 @@ readonly class AiToolBridge
         return $functionDefinition->invoke($json);
     }
 
-    public function informAssistantAboutCallResult(ToolBridgeFunctionCallResult $callResult): string
+    public function informAssistantAboutCallResult(ToolFunctionCallResult $callResult): string
     {
         $userMessage = "|CallToolBridgeFunction|{$callResult->functionDefinition->getName()}|Result|:";
         $userMessage .= "\n";
 
         $res = [
-            'success' => $callResult->status === ToolBridgeFunctionCallResultStatus::SUCCESS,
+            'success' => $callResult->status === ToolFunctionCallResultStatus::SUCCESS,
             'message' => $callResult->message,
             'data' => $callResult->data,
         ];
 
         $userMessage .= json_encode($res);
 
-        return $this->aiAssistant->getAssistantResponse($userMessage);
+        return $this->aiAssistant->getResponseForToolFunction($userMessage);
     }
 
-    public function getFunctionDefinition(string $message): ?ToolBridgeFunctionDefinition
+    public function getFunctionDefinition(string $message): ?ToolFunctionDefinition
     {
         foreach ($this->functionDefinitions as $toolBridgeDefinition) {
             if (mb_stristr($message, "|CallToolBridgeFunction|{$toolBridgeDefinition->getName()}|") !== false) {
@@ -91,7 +91,7 @@ readonly class AiToolBridge
     /**
      * @throws Exception
      */
-    public function queryToolBridgeFunction(string $message): ToolBridgeFunctionCallResult
+    public function queryToolBridgeFunction(string $message): ToolFunctionCallResult
     {
         $functionDefinition = $this->getFunctionDefinition($message);
         if (is_null($functionDefinition)) {
@@ -104,7 +104,7 @@ readonly class AiToolBridge
     /**
      * @throws Exception
      */
-    public function getToolBridgePrompt(): string
+    public function getPrompt(): string
     {
         if (sizeof($this->functionDefinitions) === 0) {
             throw new Exception('Need at least one registered function definition.');

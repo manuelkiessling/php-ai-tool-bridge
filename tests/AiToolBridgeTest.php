@@ -12,9 +12,9 @@ class AiToolBridgeTest extends TestCase
 {
     public function testContainsToolQuery(): void
     {
-        $functionDefinition = new DemoToolBridgeFunctionDefinition();
+        $functionDefinition = new DemoToolFunctionDefinition();
         $bridge = new AiToolBridge(
-            new DemoAiAssistant(),
+            new DemoAiAssistantMessenger(),
             [$functionDefinition],
         );
 
@@ -37,9 +37,9 @@ class AiToolBridgeTest extends TestCase
 
     public function testGetFunctionDefinition(): void
     {
-        $functionDefinition = new DemoToolBridgeFunctionDefinition();
+        $functionDefinition = new DemoToolFunctionDefinition();
         $bridge = new AiToolBridge(
-            new DemoAiAssistant(),
+            new DemoAiAssistantMessenger(),
             [$functionDefinition],
         );
 
@@ -54,9 +54,9 @@ class AiToolBridgeTest extends TestCase
      */
     public function testGetPrompt(): void
     {
-        $functionDefinition = new DemoToolBridgeFunctionDefinition();
+        $functionDefinition = new DemoToolFunctionDefinition();
         $bridge = new AiToolBridge(
-            new DemoAiAssistant(),
+            new DemoAiAssistantMessenger(),
             [$functionDefinition],
         );
 
@@ -107,15 +107,15 @@ Example:
 }
 
 PROMPT,
-            $bridge->getToolBridgePrompt(),
+            $bridge->getPrompt(),
         );
     }
 
     public function testDialog(): void
     {
-        $functionDefinition = new DemoToolBridgeFunctionDefinition();
+        $functionDefinition = new DemoToolFunctionDefinition();
         $bridge = new AiToolBridge(
-            new DemoAiAssistant(),
+            new DemoAiAssistantMessenger(),
             [$functionDefinition],
         );
 

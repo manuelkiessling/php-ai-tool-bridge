@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ManuelKiessling\Test\AiToolBridge;
 
-use ManuelKiessling\AiToolBridge\AiAssistant;
+use ManuelKiessling\AiToolBridge\AiAssistantMessenger;
 
-class DemoAiAssistant implements AiAssistant
+class DemoAiAssistantMessenger implements AiAssistantMessenger
 {
-    public function getAssistantResponse(string $userMessage): string
+    public function getResponseForToolFunction(string $userMessage): string
     {
         if ($userMessage === "Value for parameter 'name' (of type STRING):") {
             return 'J. Doe';

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ManuelKiessling\AiToolBridge;
 
-interface ToolBridgeFunctionDefinition
+interface ToolFunctionDefinition
 {
     public function getName(): string;
 
@@ -12,5 +12,5 @@ interface ToolBridgeFunctionDefinition
 
     public function getInputJsonSchema(): string;
 
-    public function invoke(string $json): ToolBridgeFunctionCallResult;
+    public function invoke(string $json): ToolFunctionCallResult;
 }

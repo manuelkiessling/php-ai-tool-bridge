@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace ManuelKiessling\Test\AiToolBridge;
 
-use ManuelKiessling\AiToolBridge\ToolBridgeFunctionCallResult;
-use ManuelKiessling\AiToolBridge\ToolBridgeFunctionCallResultStatus;
-use ManuelKiessling\AiToolBridge\ToolBridgeFunctionDefinition;
+use ManuelKiessling\AiToolBridge\ToolFunctionCallResult;
+use ManuelKiessling\AiToolBridge\ToolFunctionCallResultStatus;
+use ManuelKiessling\AiToolBridge\ToolFunctionDefinition;
 
-class DemoToolBridgeFunctionDefinition implements ToolBridgeFunctionDefinition
+class DemoToolFunctionDefinition implements ToolFunctionDefinition
 {
     public function getName(): string
     {
@@ -20,13 +20,13 @@ class DemoToolBridgeFunctionDefinition implements ToolBridgeFunctionDefinition
         return 'creates a new user account';
     }
 
-    public function invoke(string $json): ToolBridgeFunctionCallResult
+    public function invoke(string $json): ToolFunctionCallResult
     {
         $jsonAsArray = json_decode($json, true);
 
-        return new ToolBridgeFunctionCallResult(
+        return new ToolFunctionCallResult(
             $this,
-            ToolBridgeFunctionCallResultStatus::SUCCESS,
+            ToolFunctionCallResultStatus::SUCCESS,
             'A new user account has been created.',
             ['json' => $jsonAsArray],
         );
