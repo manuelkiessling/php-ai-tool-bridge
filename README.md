@@ -4,6 +4,8 @@
 
 Note: This product is independently developed and not affiliated, endorsed, or sponsored by OpenAI.
 
+![](https://manuel.kiessling.net/php-ai-tool-bridge/PHP_AI_Tool_Bridge_-_Demo_Video.gif)
+
 ## Installation
 
 Install this package as a dependency using [Composer](https://getcomposer.org).
