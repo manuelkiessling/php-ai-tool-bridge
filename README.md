@@ -15,32 +15,23 @@ composer require manuelkiessling/ai-tool-bridge
 ```
 
 
-## Getting started
+## Overview
 
-### The problem
+The major challenge when integrating AI into any project is managing interactions between the AI and the rest of your application. This becomes especially complex when the AI needs to make API calls to retrieve information or trigger actions.
 
-Integrating AIs like the OpenAI GPT-3 and GPT-4 models into your own projects using the ChatGPT API is quick and easy if all you want to do is exchange text messages with the AI.
+AI Tool Bridge for PHP elegantly solves this problem by offering a straightforward interface to define "tool functions" that the AI can utilize when it needs to interact with external systems.
 
-But things get much more interesting if you make the AI interact with the rest of your application, e.g. by having it make API calls to retrieve information or trigger external actions.
-
-However, things also get *messy* when trying to do so - you need to identify if and when the AI is not simply talking to the user, but wants to talk to your applications or APIs. And you need to ensure that when the AI talks to your systems via some structured language like JSON, it does so using the exact JSON structure you need.
+An important optimization is the library's capability to generate the required JSON structure for a tool function. It does so by requesting only the required values from the AI and then generating the JSON based on a provided JSON schema. This approach guarantees the validity of the final JSON that reaches your application code.
 
 
-### The solution
+Key features of this library include:
 
-AI Tool Bridge for PHP makes this straightforward. It allows you to define "tool functions" that the AI can use when it needs to talk to the outside world.
+- Facilitating the definition of tools that the AI can use for external interactions.
+- Providing a robust prompt structure to guide the AI on when and how to use these tools.
+- Ensuring that the tools are triggered with complete and correctly formatted JSON.
 
-A "tool" in this context is any kind of external interaction that can be triggered by the AI, like making an API call to retrieve information from one of your backend systems.
 
-This library
-
-- helps you to define these tools so they can be used by the AI,
-- provides a battle-tested prompt (that extends your own prompt) which ensures that the AI knows how and when to use these tools,
-- and ensures that when the AI triggers a tool, it does so with complete and correctly formatted JSON.
-
-An important optimization is that this library does NOT use the AI assistant to create the actual JSON needed for using a tool function. Instead, it asks the AI only for the required values, and — based on a you need to provide JSON Schema — uses them to generate the full JSON structure itself. This way, the library ensures that the final JSON is always valid.
-
-### Example
+## Example
 
 Let's assume you have an ecommerce business and you want to provide an AI chat interface which allows to browse your product catalog. To do so, you've decided to integrate with OpenAI's GPT-4 model through the ChatGPT API.
 
