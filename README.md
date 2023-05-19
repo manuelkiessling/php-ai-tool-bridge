@@ -1,6 +1,6 @@
 # AI Tool Bridge for PHP
 
-## A PHP library that simplifies making AIs talk to your own APIs
+## Seamlessly empower your AI integration to interact with your own code and services
 
 Note: This product is independently developed and not affiliated, endorsed, or sponsored by OpenAI.
 
