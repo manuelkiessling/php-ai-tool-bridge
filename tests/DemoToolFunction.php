@@ -48,6 +48,16 @@ class DemoToolFunction implements ToolFunction
       "type": "integer",
       "minimum": 18,
       "maximum": 100
+    },
+    "interests": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "maxLength": 64
+      }
     }
   }
 }

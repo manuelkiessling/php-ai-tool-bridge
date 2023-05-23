@@ -113,14 +113,19 @@ class JsonSchemaParser
                 $current = &$current[$part];
             }
 
-            $current = match ($value->jsonSchemaInfo->type) {
+            $currentValue = match ($value->jsonSchemaInfo->type) {
                 JsonSchemaType::INTEGER => (int) $value->value,
                 JsonSchemaType::FLOAT => (float) $value->value,
                 JsonSchemaType::STRING => (string) $value->value,
                 JsonSchemaType::BOOLEAN => (bool) $value->value,
-                JsonSchemaType::ARRAY => explode('|', (string) $value->value),
                 default => $value->value
             };
+
+            if ($value->jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
+                $current[] = $currentValue;
+            } else {
+                $current = $currentValue;
+            }
         }
 
         return json_encode($result);

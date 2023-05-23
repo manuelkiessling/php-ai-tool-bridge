@@ -6,12 +6,12 @@ namespace ManuelKiessling\AiToolBridge;
 
 use Exception;
 use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaParser;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaType;
 use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaValue;
 use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaValues;
 
 use function implode;
 use function is_null;
-use function json_encode;
 use function mb_stristr;
 use function sizeof;
 
@@ -46,12 +46,34 @@ readonly class AiToolBridge
 
         $values = [];
         foreach ($jsonSchemaInfos as $jsonSchemaInfo) {
-            $values[] = new JsonSchemaValue(
-                $jsonSchemaInfo,
-                $this->aiAssistant->getResponseForToolFunction(
-                    "Value for parameter '{$jsonSchemaInfo->path}' (of type {$jsonSchemaInfo->type->name}):",
-                ),
-            );
+
+            if ($jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
+                $index = 0;
+                while (true) {
+
+                    $response = $this->aiAssistant->getResponseForToolFunction(
+                        "Value for entry #$index of array '{$jsonSchemaInfo->path}' (of type {$jsonSchemaInfo->subtype->name} - answer with 'AiToolBridgeNone' if all values for this array have been provided):",
+                    );
+
+                    if (mb_stristr($response, 'AiToolBridgeNone')) {
+                        break;
+                    }
+
+                    $values[] = new JsonSchemaValue(
+                        $jsonSchemaInfo,
+                        $response,
+                    );
+
+                    $index++;
+                }
+            } else {
+                $values[] = new JsonSchemaValue(
+                    $jsonSchemaInfo,
+                    $this->aiAssistant->getResponseForToolFunction(
+                        "Value for parameter '{$jsonSchemaInfo->path}' (of type {$jsonSchemaInfo->type->name}):",
+                    ),
+                );
+            }
         }
 
         $jsonSchemaValues = new JsonSchemaValues(...$values);
@@ -59,22 +81,6 @@ readonly class AiToolBridge
         $json = $jsonSchemaParser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues);
 
         return $functionDefinition->invoke($json);
-    }
-
-    public function informAssistantAboutCallResult(ToolFunctionCallResult $callResult): string
-    {
-        $userMessage = "|CallToolBridgeFunction|{$callResult->functionDefinition->getName()}|Result|:";
-        $userMessage .= "\n";
-
-        $res = [
-            'success' => $callResult->status === ToolFunctionCallResultStatus::SUCCESS,
-            'message' => $callResult->message,
-            'data' => $callResult->data,
-        ];
-
-        $userMessage .= json_encode($res);
-
-        return $this->aiAssistant->getResponseForToolFunction($userMessage);
     }
 
     public function getFunctionDefinition(string $message): ?ToolFunction
@@ -86,19 +92,6 @@ readonly class AiToolBridge
         }
 
         return null;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function queryToolBridgeFunction(string $message): ToolFunctionCallResult
-    {
-        $functionDefinition = $this->getFunctionDefinition($message);
-        if (is_null($functionDefinition)) {
-            throw new Exception();
-        }
-
-        return $functionDefinition->invoke();
     }
 
     /**
