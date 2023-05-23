@@ -94,6 +94,15 @@ class JsonSchemaParser
         // Create an array of all schema paths
         foreach ($schemaInfos as $info) {
             $schemaPaths[] = $info->path;
+
+            $pathParts = explode('.', $info->path);
+            $current = &$result;
+            foreach ($pathParts as $part) {
+                if (!isset($current[$part])) {
+                    $current[$part] = $info->type === JsonSchemaType::ARRAY ? [] : null;
+                }
+                $current = &$current[$part];
+            }
         }
 
         foreach ($values as $value) {
@@ -113,21 +122,23 @@ class JsonSchemaParser
                 $current = &$current[$part];
             }
 
-            $currentValue = match ($value->jsonSchemaInfo->type) {
-                JsonSchemaType::INTEGER => (int) $value->value,
-                JsonSchemaType::FLOAT => (float) $value->value,
-                JsonSchemaType::STRING => (string) $value->value,
-                JsonSchemaType::BOOLEAN => (bool) $value->value,
-                default => $value->value
-            };
-
             if ($value->jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
-                $current[] = $currentValue;
+                $current[] = $this->castValue($value->value, $value->jsonSchemaInfo->subtype);
             } else {
-                $current = $currentValue;
+                $current = $this->castValue($value->value, $value->jsonSchemaInfo->type);
             }
         }
 
         return json_encode($result);
+    }
+
+    private function castValue(mixed $value, JsonSchemaType $type): mixed {
+        return match ($type) {
+            JsonSchemaType::INTEGER => (int) $value,
+            JsonSchemaType::FLOAT => (float) $value,
+            JsonSchemaType::STRING => (string) $value,
+            JsonSchemaType::BOOLEAN => (bool) $value,
+            default => $value
+        };
     }
 }

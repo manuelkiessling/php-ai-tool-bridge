@@ -228,4 +228,133 @@ JSON;
             $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
         );
     }
+
+    public function testGenerateJsonFromSchemaEmptyArray(): void
+    {
+        $jsonSchemaInfoName = new JsonSchemaInfo(
+            'name',
+            JsonSchemaType::STRING,
+            null,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoAge = new JsonSchemaInfo(
+            'age',
+            JsonSchemaType::INTEGER,
+            null,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoInterests = new JsonSchemaInfo(
+            'interests',
+            JsonSchemaType::ARRAY,
+            JsonSchemaType::STRING,
+            null,
+            null
+        );
+
+        $jsonSchemaInfos = new JsonSchemaInfos(...[
+            $jsonSchemaInfoName,
+            $jsonSchemaInfoAge,
+            $jsonSchemaInfoInterests,
+        ]);
+
+        $jsonSchemaValues = new JsonSchemaValues(...[
+            new JsonSchemaValue(
+                $jsonSchemaInfoName,
+                'John Doe'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoAge,
+                '26'
+            ),
+        ]);
+
+        $parser = new JsonSchemaParser();
+
+        $this->assertJsonStringEqualsJsonString(
+            '{"name": "John Doe" ,"age": 26, "interests": []}',
+            $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
+        );
+    }
+
+    public function testGenerateJsonFromSchemaMultipleArrays(): void
+    {
+        $jsonSchemaInfoInterests = new JsonSchemaInfo(
+            'interests',
+            JsonSchemaType::ARRAY,
+            JsonSchemaType::STRING,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoNames = new JsonSchemaInfo(
+            'names',
+            JsonSchemaType::ARRAY,
+            JsonSchemaType::STRING,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoAges = new JsonSchemaInfo(
+            'ages',
+            JsonSchemaType::ARRAY,
+            JsonSchemaType::INTEGER,
+            null,
+            null
+        );
+
+        $jsonSchemaInfos = new JsonSchemaInfos(...[
+            $jsonSchemaInfoInterests,
+            $jsonSchemaInfoNames,
+            $jsonSchemaInfoAges
+        ]);
+
+        $jsonSchemaValues = new JsonSchemaValues(...[
+            new JsonSchemaValue(
+                $jsonSchemaInfoAges,
+                '26'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoInterests,
+                'Painting'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoNames,
+                'John'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoNames,
+                'Doe'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoAges,
+                '26'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoAges,
+                '42'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoInterests,
+                'Horse Riding'
+            ),
+        ]);
+
+        $parser = new JsonSchemaParser();
+
+        $this->assertJsonStringEqualsJsonString(
+            '{"interests": ["Painting", "Horse Riding"], "names": ["John", "Doe"], "ages": [26, 26, 42]}',
+            $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
+        );
+    }
 }
