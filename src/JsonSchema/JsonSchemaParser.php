@@ -66,7 +66,7 @@ class JsonSchemaParser
 
                 if ($type === JsonSchemaType::ARRAY && $subtype === JsonSchemaType::OBJECT && isset($value['items']['properties'])) {
                     $arrayObjectsJsonSchemaInfo = [];
-                    $this->processSchema($value['items']['properties'], '', $arrayObjectsJsonSchemaInfo);
+                    $this->processSchema($value['items']['properties'], $key, $arrayObjectsJsonSchemaInfo);
                 }
 
                 if ($type === JsonSchemaType::OBJECT && isset($value['properties'])) {

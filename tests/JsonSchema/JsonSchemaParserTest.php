@@ -147,13 +147,13 @@ JSON;
                 null,
                 [
                     new JsonSchemaInfo(
-                        'name',
+                        'hobbies.name',
                         JsonSchemaType::STRING,
                         null,
                         null
                     ),
                     new JsonSchemaInfo(
-                        'active',
+                        'hobbies.active',
                         JsonSchemaType::BOOLEAN,
                         null,
                         null
@@ -354,6 +354,68 @@ JSON;
 
         $this->assertJsonStringEqualsJsonString(
             '{"interests": ["Painting", "Horse Riding"], "names": ["John", "Doe"], "ages": [26, 26, 42]}',
+            $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
+        );
+    }
+
+    public function testGenerateJsonFromSchemaArrayWithObjects(): void
+    {
+        return;
+        $jsonSchemaInfoHobbiesName = new JsonSchemaInfo(
+            'hobbies.name',
+            JsonSchemaType::STRING,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoHobbiesActive = new JsonSchemaInfo(
+            'hobbies.active',
+            JsonSchemaType::BOOLEAN,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoHobbies = new JsonSchemaInfo(
+            'hobbies',
+            JsonSchemaType::ARRAY,
+            JsonSchemaType::OBJECT,
+            null,
+            [
+                $jsonSchemaInfoHobbiesName,
+                $jsonSchemaInfoHobbiesActive,
+            ]
+        );
+
+        $jsonSchemaInfos = new JsonSchemaInfos(...[
+            $jsonSchemaInfoHobbies
+        ]);
+
+        $jsonSchemaValues = new JsonSchemaValues(...[
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesName,
+                'Painting'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesActive,
+                '1'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesName,
+                'Horse Riding'
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesActive,
+                '0'
+            ),
+        ]);
+
+        $parser = new JsonSchemaParser();
+
+        $this->assertJsonStringEqualsJsonString(
+            '{"hobbies": [{"name": "Painting", "active": true}, {"name": "Horse Riding", "active": false}]}',
             $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
         );
     }
