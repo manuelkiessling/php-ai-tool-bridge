@@ -224,7 +224,7 @@ JSON;
         $parser = new JsonSchemaParser();
 
         $this->assertJsonStringEqualsJsonString(
-            '{"name":"John Doe","age":26,"interests":["Painting","Horse Riding"]}',
+            '{"name": "John Doe" ,"age": 26, "interests": ["Painting", "Horse Riding"]}',
             $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
         );
     }
