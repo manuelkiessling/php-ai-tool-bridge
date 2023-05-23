@@ -62,6 +62,13 @@ class JsonSchemaParser
                     $subtype = null;
                 }
 
+                $arrayObjectsJsonSchemaInfo = null;
+
+                if ($type === JsonSchemaType::ARRAY && $subtype === JsonSchemaType::OBJECT && isset($value['items']['properties'])) {
+                    $arrayObjectsJsonSchemaInfo = [];
+                    $this->processSchema($value['items']['properties'], '', $arrayObjectsJsonSchemaInfo);
+                }
+
                 if ($type === JsonSchemaType::OBJECT && isset($value['properties'])) {
                     $this->processSchema($value['properties'], $currentPath, $result);
                 } else {
@@ -70,6 +77,7 @@ class JsonSchemaParser
                         type: $type,
                         subtype: $subtype,
                         enumValues: $value['enum'] ?? null,
+                        arrayObjectsJsonSchemaInfo: $arrayObjectsJsonSchemaInfo
                     );
                 }
             }

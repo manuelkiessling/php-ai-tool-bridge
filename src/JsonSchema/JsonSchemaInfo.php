@@ -11,6 +11,7 @@ readonly class JsonSchemaInfo
         public JsonSchemaType  $type,
         public ?JsonSchemaType $subtype = null,
         public ?array          $enumValues = null,
+        public ?array          $arrayObjectsJsonSchemaInfo = null,
     ) {
     }
 }

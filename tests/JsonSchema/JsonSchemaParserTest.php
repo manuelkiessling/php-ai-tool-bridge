@@ -52,6 +52,23 @@ class JsonSchemaParserTest extends TestCase
         "type": "string",
         "maxLength": 64
       }
+    },
+    "hobbies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "name", "active" ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the hobby."
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Is this hobby currently pursued?"
+          }
+        }
+      }
     }
   }
 }
@@ -86,6 +103,16 @@ JSON;
             new JsonSchemaInfo('location.country', JsonSchemaType::ENUM, null, ['US', 'CA', 'GB']),
             new JsonSchemaInfo('location.address', JsonSchemaType::STRING, null, null),
             new JsonSchemaInfo('interests', JsonSchemaType::ARRAY, JsonSchemaType::STRING, null),
+            new JsonSchemaInfo(
+                'hobbies',
+                JsonSchemaType::ARRAY,
+                JsonSchemaType::OBJECT,
+                null,
+                [
+                    new JsonSchemaInfo('name', JsonSchemaType::STRING, null, null),
+                    new JsonSchemaInfo('active', JsonSchemaType::BOOLEAN, null, null),
+                ]
+            ),
         ];
 
         foreach ($results as $key => $result) {
