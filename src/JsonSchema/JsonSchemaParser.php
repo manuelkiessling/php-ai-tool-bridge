@@ -201,10 +201,10 @@ class JsonSchemaParser
 
     private function castValue(mixed $value, JsonSchemaType $type): mixed {
         return match ($type) {
-            JsonSchemaType::INTEGER => (int) $value,
-            JsonSchemaType::FLOAT => (float) $value,
-            JsonSchemaType::STRING => (string) $value,
-            JsonSchemaType::BOOLEAN => trim(mb_strtolower($value)) === 'false' ? false : (bool) $value,
+            JsonSchemaType::INTEGER => (int)$value,
+            JsonSchemaType::FLOAT => (float)$value,
+            JsonSchemaType::STRING => trim((string)$value),
+            JsonSchemaType::BOOLEAN => trim(mb_strtolower($value)) === 'false' ? false : (bool)$value,
             default => $value
         };
     }
