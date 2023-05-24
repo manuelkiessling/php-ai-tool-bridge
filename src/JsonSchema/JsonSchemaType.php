@@ -8,7 +8,7 @@ enum JsonSchemaType
 {
     case STRING;
     case INTEGER;
-    case FLOAT;
+    case NUMBER;
     case ARRAY;
     case ENUM;
     case BOOLEAN;

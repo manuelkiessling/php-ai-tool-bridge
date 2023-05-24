@@ -40,7 +40,7 @@ class JsonSchemaParser
                     $type = match ($value['type']) {
                         'string' => JsonSchemaType::STRING,
                         'integer' => JsonSchemaType::INTEGER,
-                        'float' => JsonSchemaType::FLOAT,
+                        'number' => JsonSchemaType::NUMBER,
                         'array' => JsonSchemaType::ARRAY,
                         'boolean' => JsonSchemaType::BOOLEAN,
                         'object' => JsonSchemaType::OBJECT
@@ -53,7 +53,7 @@ class JsonSchemaParser
                     $subtype = match ($value['items']['type']) {
                         'string' => JsonSchemaType::STRING,
                         'integer' => JsonSchemaType::INTEGER,
-                        'float' => JsonSchemaType::FLOAT,
+                        'number' => JsonSchemaType::NUMBER,
                         'array' => JsonSchemaType::ARRAY,
                         'boolean' => JsonSchemaType::BOOLEAN,
                         'object' => JsonSchemaType::OBJECT
@@ -202,7 +202,7 @@ class JsonSchemaParser
     private function castValue(mixed $value, JsonSchemaType $type): mixed {
         return match ($type) {
             JsonSchemaType::INTEGER => (int)$value,
-            JsonSchemaType::FLOAT => (float)$value,
+            JsonSchemaType::NUMBER => (float)$value,
             JsonSchemaType::STRING => trim((string)$value),
             JsonSchemaType::BOOLEAN => trim(mb_strtolower($value)) === 'false' ? false : (bool)$value,
             default => $value
