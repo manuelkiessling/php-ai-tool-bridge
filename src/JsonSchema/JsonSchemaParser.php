@@ -85,69 +85,71 @@ class JsonSchemaParser
     }
 
     public function generateJsonFromSchema(
-        JsonSchemaInfos $schemaInfos,
-        JsonSchemaValues $values,
+        JsonSchemaInfos  $jsonSchemaInfos,
+        JsonSchemaValues $jsonSchemaValues,
     ): string {
-        $result = [];
+        $resultArray = [];
         $schemaPaths = [];
-        $arrayOfObjectsSchemaInfos = [];
+        $arrayOfObjectsSchemaPaths = [];
 
-        // Create an array of all schema paths
-        foreach ($schemaInfos as $info) {
-            $this->traverseSchemaInfos($info, $schemaPaths, $result, $arrayOfObjectsSchemaInfos);
+        // Traverse schema to generate a structure in result array and create an array of all schema paths
+        foreach ($jsonSchemaInfos as $info) {
+            $this->traverseSchemaInfos($info, $schemaPaths, $resultArray, $arrayOfObjectsSchemaPaths);
         }
 
-        foreach ($values as $value) {
-            if (!in_array($value->jsonSchemaInfo->path, $schemaPaths)) {
+        // Iterate through each jsonSchemaValue and place it in the corresponding place in the result array
+        foreach ($jsonSchemaValues as $jsonSchemaValue) {
+            if (!in_array($jsonSchemaValue->jsonSchemaInfo->path, $schemaPaths)) {
                 throw new InvalidArgumentException(
-                    'No corresponding JsonSchemaInfo found for JsonSchemaValue path: ' . $value->jsonSchemaInfo->path
+                    'No corresponding JsonSchemaInfo found for JsonSchemaValue path: ' . $jsonSchemaValue->jsonSchemaInfo->path
                 );
             }
 
-            $pathParts = explode('.', $value->jsonSchemaInfo->path);
-            $arrayOfObjectsPath = implode('.', array_slice($pathParts, 0, -1));
+            $pathParts = explode('.', $jsonSchemaValue->jsonSchemaInfo->path);
+            $parentPath = implode('.', array_slice($pathParts, 0, -1));
 
-            $current = &$result;
-            if (in_array($arrayOfObjectsPath, $arrayOfObjectsSchemaInfos)) {
-                // This is a value for an array of objects
-
+            $currentResultArrayLevel = &$resultArray;
+            if (in_array($parentPath, $arrayOfObjectsSchemaPaths)) {
+                // This is a jsonSchemaValue for an array of objects
                 foreach ($pathParts as $part) {
+                    // In case it's not the last part, make sure the part exists in current array and dive into it
                     if ($part !== end($pathParts)) {
-                        // Before reaching the last path part
-                        if (!isset($current[$part])) {
-                            $current[$part] = [];
+                        if (!isset($currentResultArrayLevel[$part])) {
+                            $currentResultArrayLevel[$part] = [];
                         }
-                        $current = &$current[$part];
+                        $currentResultArrayLevel = &$currentResultArrayLevel[$part];
                     } else {
                         // At the last path part
-                        if (!isset($current[$value->objectId])) {
-                            $current[$value->objectId] = [];
+                        // Make sure the object id exists and set the jsonSchemaValue in the correct place
+                        if (!isset($currentResultArrayLevel[$jsonSchemaValue->objectId])) {
+                            $currentResultArrayLevel[$jsonSchemaValue->objectId] = [];
                         }
-                        $current[$value->objectId][$part] = $this->castValue($value->value, $value->jsonSchemaInfo->type);
+                        $currentResultArrayLevel[$jsonSchemaValue->objectId][$part] = $this->castValue($jsonSchemaValue->value, $jsonSchemaValue->jsonSchemaInfo->type);
                     }
                 }
-
             } else {
-                // This is not a value for an array of objects
-
+                // This is not a jsonSchemaValue for an array of objects
                 foreach ($pathParts as $part) {
-                    if (!isset($current[$part])) {
-                        $current[$part] = [];
+                    // If it's not the last part, make sure the part exists in current array and dive into it
+                    if (!isset($currentResultArrayLevel[$part])) {
+                        $currentResultArrayLevel[$part] = [];
                     }
-                    $current = &$current[$part];
+                    $currentResultArrayLevel = &$currentResultArrayLevel[$part];
                 }
 
-                if ($value->jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
-                    $current[] = $this->castValue($value->value, $value->jsonSchemaInfo->subtype);
+                // At the end of the path, set the jsonSchemaValue accordingly based on the type of schema jsonSchemaValue
+                if ($jsonSchemaValue->jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
+                    $currentResultArrayLevel[] = $this->castValue($jsonSchemaValue->value, $jsonSchemaValue->jsonSchemaInfo->subtype);
                 } else {
-                    $current = $this->castValue($value->value, $value->jsonSchemaInfo->type);
+                    $currentResultArrayLevel = $this->castValue($jsonSchemaValue->value, $jsonSchemaValue->jsonSchemaInfo->type);
                 }
             }
         }
 
-        $result = $this->cleanupResultArray($result, $arrayOfObjectsSchemaInfos);
+        // Clean up the resulting array before returning it
+        $resultArray = $this->cleanupResultArray($resultArray, $arrayOfObjectsSchemaPaths);
 
-        return json_encode($result);
+        return json_encode($resultArray);
     }
 
     private function cleanupResultArray(array $array, array $arrayOfObjectsSchemaInfos): array
