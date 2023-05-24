@@ -107,10 +107,10 @@ class JsonSchemaParser
             $pathParts = explode('.', $value->jsonSchemaInfo->path);
             $arrayOfObjectsPath = implode('.', array_slice($pathParts, 0, -1));
 
+            $current = &$result;
             if (in_array($arrayOfObjectsPath, $arrayOfObjectsSchemaInfos)) {
                 // This is a value for an array of objects
 
-                $current = &$result;
                 foreach ($pathParts as $part) {
                     if ($part !== end($pathParts)) {
                         // Before reaching the last path part
@@ -130,7 +130,6 @@ class JsonSchemaParser
             } else {
                 // This is not a value for an array of objects
 
-                $current = &$result;
                 foreach ($pathParts as $part) {
                     if (!isset($current[$part])) {
                         $current[$part] = [];
@@ -146,7 +145,27 @@ class JsonSchemaParser
             }
         }
 
+        $result = $this->cleanupResultArray($result, $arrayOfObjectsSchemaInfos);
+
         return json_encode($result);
+    }
+
+    private function cleanupResultArray(array $array, array $arrayOfObjectsSchemaInfos): array
+    {
+        foreach ($array as $key => $value) {
+            if (in_array($key, $arrayOfObjectsSchemaInfos) && is_array($value)) {
+                // If it's an array of objects, re-index and remove null values
+                $value = array_values(array_filter($value, function ($item) {
+                    return $item !== null;
+                }));
+                $array[$key] = $value;
+            } elseif (is_array($value)) {
+                // If it's a nested array, recurse
+                $array[$key] = $this->cleanupResultArray($value, $arrayOfObjectsSchemaInfos);
+            }
+        }
+
+        return $array;
     }
 
     private function traverseSchemaInfos(
