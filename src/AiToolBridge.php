@@ -109,9 +109,9 @@ readonly class AiToolBridge
 
     public function getFunctionDefinition(string $message): ?ToolFunction
     {
-        foreach ($this->functionDefinitions as $toolBridgeDefinition) {
-            if (mb_stristr($message, "|CallToolBridgeFunction|{$toolBridgeDefinition->getName()}|") !== false) {
-                return $toolBridgeDefinition;
+        foreach ($this->functionDefinitions as $functionDefinition) {
+            if (mb_stristr($message, "|CallToolBridgeFunction|{$functionDefinition->getName()}|") !== false) {
+                return $functionDefinition;
             }
         }
 
