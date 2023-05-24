@@ -360,7 +360,6 @@ JSON;
 
     public function testGenerateJsonFromSchemaArrayWithObjects(): void
     {
-        return;
         $jsonSchemaInfoHobbiesName = new JsonSchemaInfo(
             'hobbies.name',
             JsonSchemaType::STRING,
@@ -393,22 +392,26 @@ JSON;
         $jsonSchemaValues = new JsonSchemaValues(...[
             new JsonSchemaValue(
                 $jsonSchemaInfoHobbiesName,
-                'Painting'
+                'Painting',
+                0
             ),
 
             new JsonSchemaValue(
                 $jsonSchemaInfoHobbiesActive,
-                '1'
+                '1',
+                0
             ),
 
             new JsonSchemaValue(
                 $jsonSchemaInfoHobbiesName,
-                'Horse Riding'
+                'Horse Riding',
+                1
             ),
 
             new JsonSchemaValue(
                 $jsonSchemaInfoHobbiesActive,
-                '0'
+                '0',
+                1
             ),
         ]);
 

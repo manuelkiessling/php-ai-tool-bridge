@@ -90,19 +90,11 @@ class JsonSchemaParser
     ): string {
         $result = [];
         $schemaPaths = [];
+        $arrayOfObjectsSchemaInfos = [];
 
         // Create an array of all schema paths
         foreach ($schemaInfos as $info) {
-            $schemaPaths[] = $info->path;
-
-            $pathParts = explode('.', $info->path);
-            $current = &$result;
-            foreach ($pathParts as $part) {
-                if (!isset($current[$part])) {
-                    $current[$part] = $info->type === JsonSchemaType::ARRAY ? [] : null;
-                }
-                $current = &$current[$part];
-            }
+            $this->traverseSchemaInfos($info, $schemaPaths, $result, $arrayOfObjectsSchemaInfos);
         }
 
         foreach ($values as $value) {
@@ -113,23 +105,77 @@ class JsonSchemaParser
             }
 
             $pathParts = explode('.', $value->jsonSchemaInfo->path);
+            $arrayOfObjectsPath = implode('.', array_slice($pathParts, 0, -1));
 
-            $current = &$result;
-            foreach ($pathParts as $part) {
-                if (!isset($current[$part])) {
-                    $current[$part] = [];
+            if (in_array($arrayOfObjectsPath, $arrayOfObjectsSchemaInfos)) {
+                // This is a value for an array of objects
+
+                $current = &$result;
+                foreach ($pathParts as $part) {
+                    if ($part !== end($pathParts)) {
+                        // Before reaching the last path part
+                        if (!isset($current[$part])) {
+                            $current[$part] = [];
+                        }
+                        $current = &$current[$part];
+                    } else {
+                        // At the last path part
+                        if (!isset($current[$value->objectId])) {
+                            $current[$value->objectId] = [];
+                        }
+                        $current[$value->objectId][$part] = $this->castValue($value->value, $value->jsonSchemaInfo->type);
+                    }
                 }
-                $current = &$current[$part];
-            }
 
-            if ($value->jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
-                $current[] = $this->castValue($value->value, $value->jsonSchemaInfo->subtype);
             } else {
-                $current = $this->castValue($value->value, $value->jsonSchemaInfo->type);
+                // This is not a value for an array of objects
+
+                $current = &$result;
+                foreach ($pathParts as $part) {
+                    if (!isset($current[$part])) {
+                        $current[$part] = [];
+                    }
+                    $current = &$current[$part];
+                }
+
+                if ($value->jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
+                    $current[] = $this->castValue($value->value, $value->jsonSchemaInfo->subtype);
+                } else {
+                    $current = $this->castValue($value->value, $value->jsonSchemaInfo->type);
+                }
             }
         }
 
         return json_encode($result);
+    }
+
+    private function traverseSchemaInfos(
+        JsonSchemaInfo $info,
+        array &$schemaPaths,
+        array &$result,
+        array &$arrayOfObjectsSchemaInfos
+    ): void {
+        $schemaPaths[] = $info->path;
+        $pathParts = explode('.', $info->path);
+        $current = &$result;
+        foreach ($pathParts as $part) {
+            if (!isset($current[$part])) {
+                $current[$part] = $info->type === JsonSchemaType::ARRAY ? [] : null;
+            }
+            $current = &$current[$part];
+        }
+
+        // Store the path of the schema info if it's an array of objects
+        if ($info->type === JsonSchemaType::ARRAY && $info->subtype === JsonSchemaType::OBJECT) {
+            $arrayOfObjectsSchemaInfos[] = $info->path;
+        }
+
+        // Traverse children if the object type is an array with a subtype of 'object'
+        if ($info->type === JsonSchemaType::ARRAY && $info->subtype === JsonSchemaType::OBJECT && $info->arrayObjectsJsonSchemaInfo !== null) {
+            foreach ($info->arrayObjectsJsonSchemaInfo as $arrayObjectJsonSchemaInfo) {
+                $this->traverseSchemaInfos($arrayObjectJsonSchemaInfo, $schemaPaths, $result, $arrayOfObjectsSchemaInfos);
+            }
+        }
     }
 
     private function castValue(mixed $value, JsonSchemaType $type): mixed {

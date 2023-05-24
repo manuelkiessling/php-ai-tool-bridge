@@ -9,6 +9,7 @@ readonly class JsonSchemaValue
     public function __construct(
         public JsonSchemaInfo $jsonSchemaInfo,
         public mixed $value,
+        public ?int $objectId = null
     ) {
     }
 }
