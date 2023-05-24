@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ManuelKiessling\AiToolBridge;
 
 use Exception;
+use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaInfo;
 use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaParser;
 use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaType;
 use ManuelKiessling\AiToolBridge\JsonSchema\JsonSchemaValue;
@@ -47,7 +48,7 @@ readonly class AiToolBridge
         $values = [];
         foreach ($jsonSchemaInfos as $jsonSchemaInfo) {
 
-            if ($jsonSchemaInfo->type === JsonSchemaType::ARRAY) {
+            if ($jsonSchemaInfo->type === JsonSchemaType::ARRAY && $jsonSchemaInfo->subtype !== JsonSchemaType::OBJECT) {
                 $index = 0;
                 while (true) {
 
@@ -63,6 +64,29 @@ readonly class AiToolBridge
                         $jsonSchemaInfo,
                         $response,
                     );
+
+                    $index++;
+                }
+            } elseif ($jsonSchemaInfo->type === JsonSchemaType::ARRAY && $jsonSchemaInfo->subtype === JsonSchemaType::OBJECT) {
+                $index = 0;
+                while (true) {
+
+                    /** @var JsonSchemaInfo $arrayObjectSchemaInfo */
+                    foreach ($jsonSchemaInfo->arrayObjectsJsonSchemaInfo as $arrayObjectSchemaInfo) {
+                        $response = $this->aiAssistant->getResponseForToolFunction(
+                            "Value for field '{$arrayObjectSchemaInfo->path}' of entry #$index of array '{$jsonSchemaInfo->path}' (of type {$arrayObjectSchemaInfo->type->name} - answer with 'AiToolBridgeNone' if all values for this array have been provided):",
+                        );
+
+                        if (mb_stristr($response, 'AiToolBridgeNone')) {
+                            break 2;
+                        }
+
+                        $values[] = new JsonSchemaValue(
+                            $arrayObjectSchemaInfo,
+                            $response,
+                            $index
+                        );
+                    }
 
                     $index++;
                 }

@@ -58,6 +58,23 @@ class DemoToolFunction implements ToolFunction
         "type": "string",
         "maxLength": 64
       }
+    },
+    "hobbies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "name", "active" ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the hobby."
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Is this hobby currently pursued?"
+          }
+        }
+      }
     }
   }
 }

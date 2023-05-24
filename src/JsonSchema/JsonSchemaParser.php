@@ -204,7 +204,7 @@ class JsonSchemaParser
             JsonSchemaType::INTEGER => (int) $value,
             JsonSchemaType::FLOAT => (float) $value,
             JsonSchemaType::STRING => (string) $value,
-            JsonSchemaType::BOOLEAN => (bool) $value,
+            JsonSchemaType::BOOLEAN => trim(mb_strtolower($value)) === 'false' ? false : (bool) $value,
             default => $value
         };
     }

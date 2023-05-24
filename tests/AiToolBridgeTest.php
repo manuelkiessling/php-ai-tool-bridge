@@ -73,6 +73,7 @@ When using function 'createUser' for you, I will need to call it with the follow
 name (of type STRING)
 age (of type INTEGER)
 interests (of type ARRAY)
+hobbies (of type ARRAY)
 
 Whenever you want to use one of the tool functions,
 you need to simply write a single message starting with '|CallToolBridgeFunction|' followed by the function name,
@@ -132,6 +133,7 @@ PROMPT,
             $result->data['json']['age'],
         );
 
+
         $this->assertSame(2, sizeof($result->data['json']['interests']));
 
         $this->assertSame(
@@ -142,6 +144,27 @@ PROMPT,
         $this->assertSame(
             'Horse Riding',
             $result->data['json']['interests'][1],
+        );
+
+
+        $this->assertSame(2, sizeof($result->data['json']['hobbies']));
+
+        $this->assertSame(
+            'Swimming',
+            $result->data['json']['hobbies'][0]['name'],
+        );
+
+        $this->assertTrue(
+            $result->data['json']['hobbies'][0]['active'],
+        );
+
+        $this->assertSame(
+            'Cooking',
+            $result->data['json']['hobbies'][1]['name'],
+        );
+
+        $this->assertFalse(
+            $result->data['json']['hobbies'][1]['active'],
         );
     }
 }
