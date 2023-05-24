@@ -422,4 +422,108 @@ JSON;
             $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
         );
     }
+
+    public function testGenerateJsonFromSchemaMultipleArraysWithObjects(): void
+    {
+        $jsonSchemaInfoHobbiesName = new JsonSchemaInfo(
+            'hobbies.name',
+            JsonSchemaType::STRING,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoHobbiesActive = new JsonSchemaInfo(
+            'hobbies.active',
+            JsonSchemaType::BOOLEAN,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoHobbies = new JsonSchemaInfo(
+            'hobbies',
+            JsonSchemaType::ARRAY,
+            JsonSchemaType::OBJECT,
+            null,
+            [
+                $jsonSchemaInfoHobbiesName,
+                $jsonSchemaInfoHobbiesActive,
+            ]
+        );
+
+        $jsonSchemaInfoCitiesName = new JsonSchemaInfo(
+            'cities.name',
+            JsonSchemaType::STRING,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoCitiesSize = new JsonSchemaInfo(
+            'cities.size',
+            JsonSchemaType::INTEGER,
+            null,
+            null
+        );
+
+        $jsonSchemaInfoCities = new JsonSchemaInfo(
+            'cities',
+            JsonSchemaType::ARRAY,
+            JsonSchemaType::OBJECT,
+            null,
+            [
+                $jsonSchemaInfoCitiesName,
+                $jsonSchemaInfoCitiesSize,
+            ]
+        );
+
+
+        $jsonSchemaInfos = new JsonSchemaInfos(...[
+            $jsonSchemaInfoHobbies,
+            $jsonSchemaInfoCities
+        ]);
+
+        $jsonSchemaValues = new JsonSchemaValues(...[
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesName,
+                'Painting',
+                0
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesActive,
+                '1',
+                0
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoCitiesName,
+                'New York',
+                0
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoCitiesSize,
+                '500',
+                0
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesName,
+                'Horse Riding',
+                1
+            ),
+
+            new JsonSchemaValue(
+                $jsonSchemaInfoHobbiesActive,
+                '0',
+                1
+            ),
+        ]);
+
+        $parser = new JsonSchemaParser();
+
+        $this->assertJsonStringEqualsJsonString(
+            '{"hobbies":[{"name":"Painting","active":true},{"name":"Horse Riding","active":false}],"cities":[{"name":"New York","size":500}]}',
+            $parser->generateJsonFromSchema($jsonSchemaInfos, $jsonSchemaValues)
+        );
+    }
 }
